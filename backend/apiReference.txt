@@ -1,0 +1,187 @@
+all are post REquest 
+
+1)addCourse
+    body:{
+         name,
+            photoUrl,
+            instructor,
+            description,
+            skills,
+            price
+    }
+    response:{
+        success,
+        message
+    }
+
+2)addLesson
+body:{
+    courseId ,
+    title,
+    videoUrl,
+    notesUrl,
+    quizId,
+    duration,
+    description
+}
+
+3)getAllCourses
+body:{
+    //
+}
+response:{
+    {
+    message:"fetched",
+    courses
+    }
+    courses is an array of Course schema.
+}
+
+4)enrollInCourse
+ body:{
+    courseId
+ }
+ response:{
+    success,message
+ }
+
+ 5)getCurrentCourse
+ body:{
+    courseId
+ }
+ response:{
+    success:true,
+    message:"course Fetched",
+    course ->this is an object . 
+ }
+
+ 6)addMessage
+    body:{
+        messageBody,
+        courseId
+    }
+    response:{
+        success,
+        message 
+    }
+
+7)/getDiscussion
+    body:{
+        courseId 
+    }
+    response:{
+        messages:
+    }
+    here the messages are this -> they have userid , messageContentt to be written and a createdAt field .
+
+
+
+for filling the the course page what you will do is . you will call this api and fill the lessons in cards. this will return lesson ids and lesson names like this [{lessonName,lessonId},{}...]. which then we will be using to get a particular lessson .
+//we are doing this cuz if i had to return all the lessons ->which are of form videourl , quizid , notesurl then it would take a lot of time. so at the time the user clicks the lesson then we will send the post request. 
+//so this method is like everything gonna get an average speed 
+//another method . fill the lessons every thing video url... and everything . during getlessons . ->so many find_by_id rrequests this is slow at beginning but superfast during user interaction .
+ like loading the initial page will take a lot of time but the accessing urls will be much faster than inital thing.
+//so we can discuss about this thing today evening 
+
+8)getLessons
+    body:{
+        courseId 
+    }
+    response:{
+        success: 
+        lessons:
+    }
+
+9)getPendingRequests
+    body:{
+    //nothing
+    }
+    response:{
+        requests
+    }
+
+ 10)updateProgress
+    body:{
+
+ 11)getProgress
+    body:{
+     courseID
+    }
+    response{
+        progress   //2d vector as discussed
+    }
+
+12)addQuiz
+    body:{
+        lessonId,  
+        title,
+        theoryQuestions,
+        theoryAnswers,
+        Mcqs,
+        McqOpts
+    }
+    response:{
+    // only message
+    }
+
+13)submitQuiz
+    body:{
+        submittedTheoryAnswers,
+        submittedMcqOpts, 
+        lessonId,    
+        lessonidx, 
+        courseId 
+    }
+    response:{
+    marks
+    }
+
+14)getQuiz
+    body:{
+        lessonID
+    }
+    response:{
+        mcqQuestions,
+        mcqOptions,
+        theoryQuestions
+    }
+
+15)addToCart
+    body:{
+        courseID
+    }
+    response:{
+        cartCourses
+    }
+
+16)removeFromCart
+    body:{
+        courseID
+    }
+    response:{
+        cartCourses
+    }
+
+17)getCartCourses
+    body:{
+        //nothing
+    }
+    response:{
+        cartCourses
+    }
+
+18)getMyCourses
+    body:{
+        //nothing
+    }
+    response:{
+        courses
+    }
+
+
+    
+
+
+
+
+

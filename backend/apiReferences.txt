@@ -1,0 +1,360 @@
+default url = /api/auth
+
+get REquest 
+
+1) "/me" 
+
+body :none 
+
+response{
+    success,
+    user 
+}
+
+POST REQUESTS 
+
+
+the process of signup will look like this ->
+the user first clicks signup then cuz the "isverified" is false he will be sent to verification page and an otp will be sent (inbuilt in signup route ). and there when he clicks confirm otp then you must hit the verifyEmail route 
+
+1)"/signup"
+
+body:{
+    name,email,password
+}
+
+response:{
+      success
+      message,
+      user: {
+        id
+        name 
+        email 
+        role 
+      }
+}
+
+
+
+2)login 
+body:{
+    email,password 
+}
+"jwt cookies will be added"
+response:{
+      success: true,
+      message: 'Logged in.',
+      user: { id: user._id, name: user.name, email: user.email, role: user.role },
+}
+
+
+3)logout 
+nothing but clears the jwt cookie from the cookies 
+
+
+4)verifyEmail 
+    send in strings both otp and email 
+    body:{
+        email,otp 
+    }
+    response:{
+        success,
+        message.//if not success show the message 
+    }
+
+
+
+password Reset process 
+there will be a button named reset password when he clicks it you must hit the sendotp route .
+then you must reddirect him to another page saying enter otp newPassword then hit the resetPassword route with them as below 
+
+5)sendOtp 
+    body:{
+        email 
+    }
+    response:{
+        nothing much use ful 
+         success: true, message: 'OTP sent.'//if the success is false then show him the message . 
+    }
+
+6)changePassword
+    body:{
+        email,otp,newPassword
+    }
+    response:{
+        success,message
+    }
+
+
+
+
+7)instructorRegister
+    body:{
+        name, email, password,resumeUrl,idProofUrl
+    }
+    response:{
+        success: true,
+      message: 'Registered successfully. Wait for admin verification.',
+      user: {
+        id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        role: newUser.role,
+      },
+    }
+
+8)verifyInstructor
+body:{
+    instructorId
+}
+res:{
+    success:true,
+      message: 'Instructor successfully verified',
+      instructor
+}
+
+9)rejectInstructor
+body:{
+    instructorId
+}
+response:{
+    success:true, message: "Instructor rejected"
+}
+
+10)createAdmin
+body:{
+    name, email, password 
+}
+response:{
+    success: true,
+      message: 'Registered successfully.',
+      user: {
+        id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        role: newUser.role,
+      },
+}
+
+the front end part for the google login is given below . basically token is a google generated credential. 
+11)googleLogin
+body:{
+    token 
+}
+this route generates a jwt token on successful login . which you have to fetch after the loading is done thats why i was asking you to use tanstack query . which is very helpful in refetching things 
+
+
+
+
+
+import React from 'react';
+import { GoogleLogin } from '@react-oauth/google';
+import axios from 'axios';
+
+function GoogleLoginButton() {
+  const handleSuccess = async (credentialResponse) => {
+    try {
+      const token = credentialResponse.credential;
+      const res = await axios.post('http://localhost:5001/auth/googleLogin', {
+        token
+      }, {
+        withCredentials: true
+      });
+
+      console.log("Login successful:", res.data);
+    } catch (err) {
+      console.error("Google login failed:", err.response?.data || err.message);
+    }
+  };
+
+  return (
+    <div>
+      <h2>Login with Google</h2>
+      <GoogleLogin onSuccess={handleSuccess} onError={() => console.log("Login Failed")} />
+    </div>
+  );
+}
+
+export default GoogleLoginButton;
+
+and dont forget to wrapp the app in googleOauthprovider tag . 
+like this 
+
+the client id given below is a working client id which will be shifted to the env.
+<GoogleOAuthProvider clientId="507714766935-9qra3bi89sep137j99505qkdcseaporr.apps.googleusercontent.com">
+      <App />
+</GoogleOAuthProvider>
+
+
+
+
+
+
+
+
+
+
+
+
+admin 
+
+{
+  "name": "gourav",
+  "email": "gourav@112123.com",
+  "role": "admin",
+  "password": "mokshu",
+  "otp":"498358",
+  "newPassword":"mokshu",
+  "resumeUrl":"johncena",
+  "idProofUrl":"johncena "
+}
+
+
+instructor 
+
+{
+    "success": true,
+    "message": "Logged in.",
+    "user": {
+        "id": "683fb65e407bde2eded9c967",
+        "name": "gourav",
+        "email": "gourav@11212.com",
+        "role": "instructor"
+    }
+}
+
+
+{
+  "name": "gourav",
+  "email": "gourav@1121234.com",
+  "role": "admin",
+  "password": "mokshu",
+  "otp":"498358",
+  "newPassword":"mokshu",
+  "resumeUrl":"johncena",
+  "idProofUrl":"johncena "
+}
+683fb75a066779ca0e76ae26
+
+683fcdfb22487ffbf475db02 -> course dsa 
+
+{
+  "name": "Full Stack Web Development",
+  "photoUrl": "https://example.com/images/web-dev-course.jpg",
+  "description": "Learn how to build modern web applications using JavaScript, React, Node.js, and MongoDB.",
+  "skills": ["JavaScript", "React", "Node.js", "MongoDB", "Express"],
+  "price": 199.99
+}
+
+
+{
+  "courseId": "683fbb6d7b90542a32631fc7",
+  "title": "Introduction to REST APIs",
+  "videoUrl": "https://cdn.example.com/videos/rest-api-intro.mp4",
+  "notesUrl": "https://cdn.example.com/notes/rest-api-intro.pdf",
+  "quizId": "",  // Will be updated later after quiz creation
+  "duration": "25:30",
+  "description": "This lesson covers the basics of REST APIs, HTTP methods, and best practices."
+}
+
+
+
+{
+  "lessonId": "683fbe122982470f3a0262d3",
+  "title": "JavaScript Basics Quiz",
+  "theoryQuestions": [
+    "Explain the difference between `let`, `var`, and `const` in JavaScript.",
+    "What is hoisting in JavaScript?"
+  ],
+  "theoryAnswers": [
+    "`var` is function scoped, `let` and `const` are block scoped. `const` cannot be reassigned.",
+    "Hoisting is JavaScript's default behavior of moving declarations to the top."
+  ],
+  "Mcqs": [
+    "Which of the following is not a JavaScript data type?",
+    "What does `===` mean in JavaScript?"
+  ],
+  "McqOpts": [
+    ["String", "Number", "Boolean", "Character"],
+    ["Assignment operator", "Strict equality operator", "Comparison operator", "None of the above"]
+  ]
+}
+
+
+
+//protocol to test the website user ends .
+1) create another instructor 
+2) verify it using an admin
+3) add a course note every response 
+4) add lessons 2 or 3 
+
+5) add quizzes 
+6) login as a user 
+7) enroll in a course 
+8) submit quiz 
+9) try to update progress .
+10)fetch the progress . 
+11) add another course 
+12) using the user add the second course to cart 
+13) enroll in the course 
+14) get the cart courses. if still shows then faulty logic smewheer 
+
+
+INTSTRUCTOR ->
+{
+  "email": "jane.doe@example.com",
+  "password": "StrongPass123!",
+  "name": "Jane Doe",
+    "resumeUrl":" ",
+    "idProofUrl":" "
+}
+
+{
+    "success": true,
+    "message": "Registered successfully. Wait for admin verification.",
+    "user": {
+        "id": "683ff106559a01462930d0be",
+        "name": "Jane Doe",
+        "email": "jane.doe@example.com",
+        "role": "instructor"
+    }
+}
+
+
+
+new course 
+{
+    "message": "course created succesfully ",
+    "newCourse": {
+        "name": "Advanced Operating Systems",
+        "photoUrl": "https://example.com/images/advanced-os.jpg",
+        "instructor": "683ff106559a01462930d0be",
+        "description": "Explore advanced concepts in operating systems including concurrency, memory management, and file systems with practical C++ examples.",
+        "skills": [
+            "Processes",
+            "Threads",
+            "Synchronization",
+            "Memory Management",
+            "File Systems",
+            "C++"
+        ],
+        "lessons": [],
+        "price": 199,
+        "_id": "683ff206559a01462930d0c9",
+        "__v": 0
+    }
+}
+
+
+quiz added to the lesson 683ff274559a01462930d0d0 
+
+{
+  "submittedTheoryAnswers": [
+    "A directed graph has edges with direction, while an undirected graph has bidirectional edges.",
+    "An adjacency list is a collection of lists used to represent which nodes are adjacent to others in a graph."
+  ],
+  "submittedMcqOpts": [2, 2],
+  "lessonId": "683ff274559a01462930d0d0",
+  "lessonidx": 0,
+  "courseId": "683ff206559a01462930d0c9"
+}

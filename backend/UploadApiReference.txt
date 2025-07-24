@@ -1,0 +1,73 @@
+method is a get method 
+/fileUpload/upload
+fileUrl is returned 
+
+
+frontend part is below . 
+
+import React, { useState } from "react";
+
+function FileUploader() {
+  const [file, setFile] = useState(null);
+  const [uploadStatus, setUploadStatus] = useState("");
+  const [uploadedUrl, setUploadedUrl] = useState("");
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+    setUploadedUrl("");
+    setUploadStatus("");
+  };
+
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    if (!file) {
+      setUploadStatus("Please select a file first.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      setUploadStatus("Uploading...");
+      const response = await fetch("http://localhost:5001/api/fileUpload/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setUploadedUrl(data.fileUrl);
+        setUploadStatus("Upload successful!");
+      } else {
+        setUploadStatus(`Upload failed: ${data.error || "Unknown error"}`);
+      }
+    } catch (error) {
+      setUploadStatus("Upload failed: " + error.message);
+    }
+  };
+
+  return (
+    <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
+      <h2>Upload File to AWS S3</h2>
+      <form onSubmit={handleUpload}>
+        <input type="file" onChange={handleFileChange} />
+        <button type="submit" style={{ marginLeft: "1rem" }}>Upload</button>
+      </form>
+
+      {uploadStatus && <p>{uploadStatus}</p>}
+
+      {uploadedUrl && (
+        <p>
+          🔗 File URL:{" "}
+          <a href={uploadedUrl} target="_blank" rel="noopener noreferrer">
+            {uploadedUrl}
+          </a>
+        </p>
+      )}
+    </div>
+  );
+}
+
+export default FileUploader;
